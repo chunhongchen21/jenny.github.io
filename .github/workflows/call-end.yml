@@ -5,7 +5,7 @@ on:
 
 jobs:
   job1:
-    uses: chunhongchen21/jenny.github.io/.github/workflows/caller.yml@v1
+    uses: ./.github/workflows/caller.yml
 
   job2:
     runs-on: ubuntu-latest
