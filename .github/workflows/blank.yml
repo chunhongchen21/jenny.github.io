@@ -38,4 +38,6 @@ jobs:
       - name: Set triggering workflow name
         run: |
            echo "Hello, World!" 
+           MY_VARIABLE="Hello, Jenny!"
+           echo "Setting variable: $MY_VARIABLE"
         
