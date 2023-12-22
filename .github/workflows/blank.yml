@@ -41,6 +41,8 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
           echo "::set-output name=test::world"
+          echo "::debug::Set the Octocat variable"
+
   test:
       runs-on: ubuntu-latest
       steps:
