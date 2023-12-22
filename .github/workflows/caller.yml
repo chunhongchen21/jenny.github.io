@@ -25,7 +25,7 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.firstword }}
       output2: ${{ steps.step2.outputs.secondword }}
-      status: ${{ steps.step2.outputs.results }}
+      status: ${{ steps.step3.outputs.results }}
     steps:
       - id: step1
         run: echo "firstword=hello" >> $GITHUB_OUTPUT
