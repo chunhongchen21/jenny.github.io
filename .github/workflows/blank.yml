@@ -42,6 +42,9 @@ jobs:
           echo test, and deploy your project.
           echo "::set-output name=test::world"
           echo "::debug::Set the Octocat variable"
+          echo "::notice file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
+          echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
+          echo "::error file={name},line={line},endLine={endLine},title={title}::{message}
 
   test:
       runs-on: ubuntu-latest
@@ -53,4 +56,11 @@ jobs:
              echo "Setting variable: $MY_VARIABLE"
              echo "MY_VARIABLE=$MY_VARIABLE" >> $GITHUB_ENV
              echo ${{needs.build.outputs.output1}} ${{needs.build.outputs.output2}}
-        
+  test2:
+      runs-on: ubuntu-latest
+      steps:
+        - name: GET triggering workflow name
+          run: |
+             echo "Hello, World!" 
+             printf '%s\n' "$action_state"
+      
