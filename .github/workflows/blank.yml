@@ -34,10 +34,8 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+          
       - name: Set triggering workflow name
         run: |
-           echo "TRIGGERING_WORKFLOW=CI" >> $GITHUB_ENV \
-           echo env \
-           echo "Hello, World!" \
-           echo $TRIGGERING_WORKFLOW
+           echo "Hello, World!" 
         
