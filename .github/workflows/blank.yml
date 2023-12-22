@@ -1,6 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI
+env:
+  DAY_OF_WEEK: Monday
 
 # Controls when the workflow will run
 on:
@@ -65,4 +67,5 @@ jobs:
           run: |
              echo "Hello, World!" 
              printf '%s\n' "$action_state"
+             echo ${{ env.DAY_OF_WEEK }}
       
