@@ -37,6 +37,7 @@ jobs:
       - name: Set triggering workflow name
         run: |
            echo "TRIGGERING_WORKFLOW=CI" >> $GITHUB_ENV \
-           echo ${{GITHUB_ENV}} \
-           echo "Hello, World!"
+           echo env \
+           echo "Hello, World!" \
+           echo $TRIGGERING_WORKFLOW
         
