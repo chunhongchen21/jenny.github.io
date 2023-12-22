@@ -1,0 +1,72 @@
+name: Email Notification
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get previous workflow run status
+        id: get-status
+        run: |
+          # Get the previous workflow run number
+          PREVIOUS_RUN=$(curl -s -H "Authorization: Bearer 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" \
+            "https://api.github.com/repos/chunhongchen21/jenny.github.io/actions/workflows/your_workflow_name/runs?event=workflow_run" \
+            | jq -r '.workflow_runs[1].id')
+          
+          # Get the status of the previous workflow run
+          STATUS=$(curl -s -H "Authorization: Bearer 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" \
+            "https://api.github.com/repos/chunhongchen21/jenny.github.io/actions/runs/$PREVIOUS_RUN" \
+            | jq -r '.status')
+          
+          echo "::set-output name=status::$STATUS"
+        shell: bash
+
+      - name: Notify based on previous status
+        run: |
+          PREVIOUS_STATUS="${{ steps.get-status.outputs.status }}"
+          if [ "$PREVIOUS_STATUS" = "success" ]; then
+            echo "The previous workflow was successful! Send a notification."
+          elif [ "$PREVIOUS_STATUS" = "failure" ]; then
+            echo "The previous workflow failed! Send a notification."
+          elif [ "$PREVIOUS_STATUS" = "cancelled" ]; then
+            echo "The previous workflow was cancelled! Send a notification."
+          else
+            echo "Unknown status: $PREVIOUS_STATUS"
+          fi
+  # robot-send-notice:
+  #   name: Message Sent
+  #   runs-on: ubuntu-latest
+  #   #    runs-on:
+  #   #      shell: bash
+  #   #      working-directory: validation/integration-test
+  #   #    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: validation/integration-test
+    
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         sparse-checkout: validation/integration-test
+
+  #     - name: Sleep for ${{ inputs.start_timer }}
+  #       run: sleep ${{ inputs.start_timer }}
+
+  #     - name: ECHO
+  #       run: echo "First workflow was a success "${{ inputs.user_name }}
+  #     - name: Send Notice to Teams Channel
+  #       run: |
+  #         python sendNotice.py \
+  #           --smtp_username sys_ptmetrics_test \
+  #           --smtp_password IntelGithubAction@123 \ 
+  #           --status success \
+  #           --msg ${{ github.event.workflow.name }}
+
