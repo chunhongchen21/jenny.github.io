@@ -12,7 +12,7 @@ on:
         value: ${{ jobs.example_job.outputs.output2 }}
       status:
         description: "The second output string"
-        value: ${{ jobs.example_job.results }}
+        value: ${{ jobs.example_job.output.results }}
       name:
         description: "The second output string"
         value: $GITHUB_WORKFLOW
@@ -25,8 +25,11 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.firstword }}
       output2: ${{ steps.step2.outputs.secondword }}
+      status: ${{ steps.step2.outputs.results }}
     steps:
       - id: step1
         run: echo "firstword=hello" >> $GITHUB_OUTPUT
       - id: step2
         run: echo "secondword=world" >> $GITHUB_OUTPUT
+      - id: step3
+        run: echo "results=${{ jobs.example_job.results }}" >> $GITHUB_OUTPUT
