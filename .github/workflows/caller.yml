@@ -12,7 +12,7 @@ on:
         value: ${{ jobs.example_job.outputs.output2 }}
       status:
         description: "The second output string"
-        value: ${{ jobs.example_job.output.status }}
+        value: ${{ jobs.example_job.outputs.status }}
       name:
         description: "The second output string"
         value: $GITHUB_WORKFLOW
