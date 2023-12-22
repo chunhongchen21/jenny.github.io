@@ -15,12 +15,12 @@ jobs:
         id: get-status
         run: |
           # Get the previous workflow run number
-          PREVIOUS_RUN=$(curl -s -H "Authorization: Bearer github" \
+          PREVIOUS_RUN=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/chunhongchen21/jenny.github.io/actions/workflows/CI/runs?event=workflow_run" \
             | jq -r '.workflow_runs[1].id')
           
           # Get the status of the previous workflow run
-          STATUS=$(curl -s -H "Authorization: Bearer github_pat_" \
+          STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/chunhongchen21/jenny.github.io/actions/runs/$PREVIOUS_RUN" \
             | jq -r '.status')
           
