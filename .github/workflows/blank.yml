@@ -44,7 +44,7 @@ jobs:
           echo "::debug::Set the Octocat variable"
           echo "::notice file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
           echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
-          echo "::error file={name},line={line},endLine={endLine},title={title}::{message}
+          # echo "::error file={name},line={line},endLine={endLine},title={title}::{message}
 
   test:
       runs-on: ubuntu-latest
