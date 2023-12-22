@@ -40,4 +40,5 @@ jobs:
            echo "Hello, World!" 
            MY_VARIABLE="Hello, Jenny!"
            echo "Setting variable: $MY_VARIABLE"
+           echo "MY_VARIABLE=$MY_VARIABLE" >> $GITHUB_ENV
         
