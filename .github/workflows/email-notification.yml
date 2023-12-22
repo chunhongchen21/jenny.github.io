@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check triggering workflow
+        run: echo "Triggered by: $TRIGGERING_WORKFLOW"
+      
       - name: Get previous workflow run status
         id: get-status
         run: |
