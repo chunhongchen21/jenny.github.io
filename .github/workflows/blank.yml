@@ -19,7 +19,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -27,18 +29,26 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
+        id: step1
+        run: |
+          echo Hello, world!
+          echo "::set-output name=test::hi"
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
+        id: step2
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-          
-      - name: Set triggering workflow name
-        run: |
-           echo "Hello, World!" 
-           MY_VARIABLE="Hello, Jenny!"
-           echo "Setting variable: $MY_VARIABLE"
-           echo "MY_VARIABLE=$MY_VARIABLE" >> $GITHUB_ENV
+          echo "::set-output name=test::world"
+  test:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Set triggering workflow name
+          run: |
+             echo "Hello, World!" 
+             MY_VARIABLE="Hello, Jenny!"
+             echo "Setting variable: $MY_VARIABLE"
+             echo "MY_VARIABLE=$MY_VARIABLE" >> $GITHUB_ENV
+             echo ${{needs.build.outputs.output1}} ${{needs.build.outputs.output2}}
         
