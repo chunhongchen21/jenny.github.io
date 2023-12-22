@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check triggering workflow
         run: |
-           echo "Triggered by: $MY_VARIABLE"
+           echo "Triggered by: $GITHUB_ENV"
       
       - name: Get previous workflow run status
         id: get-status
