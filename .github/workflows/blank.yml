@@ -38,6 +38,7 @@ jobs:
       - name: Run a multi-line script
         id: step2
         run: |
+          env
           echo Add other actions to build,
           echo test, and deploy your project.
           echo "::set-output name=test::world"
