@@ -12,7 +12,8 @@ jobs:
 
     steps:
       - name: Check triggering workflow
-        run: echo "Triggered by: $TRIGGERING_WORKFLOW"
+        run: |
+           echo "Triggered by: $MY_VARIABLE"
       
       - name: Get previous workflow run status
         id: get-status
