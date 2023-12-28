@@ -13,6 +13,7 @@ jobs:
     if: success() && true
     steps:
       - run: |
+          echo ${GITHUB_WORKFLOW}
           echo ${{ needs.job1.outputs.firstword }} ${{ needs.job1.outputs.secondword }}
           echo ${{ needs.job1.outputs.name }} run completed with status ${{ needs.job1.outputs.status }}
       
