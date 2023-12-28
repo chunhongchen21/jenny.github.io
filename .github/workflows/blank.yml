@@ -70,4 +70,8 @@ jobs:
              echo ${{ env.DAY_OF_WEEK }}
              echo $GITHUB_WORKFLOW is completed with the status ${{ github.action_status }}
              echo ${{ job.status }} ${{ github.event.issue.html_url }} jobs.test.result ${{ job.services.postgres.ports[5432] }}
-      
+        - name: Show GitHub context   
+          env: 
+            GITHUB_CONTEXT: ${{ toJson(github) }}   
+          run: echo "$GITHUB_CONTEXT"
+          shell: bash     
