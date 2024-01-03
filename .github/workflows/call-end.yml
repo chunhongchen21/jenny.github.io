@@ -9,10 +9,12 @@ jobs:
 
   job2:
     runs-on: ubuntu-latest
+    
     needs: job1
     if: success() && true
     steps:
       - run: |
+          echo ${{ secrets.SMTP_USERNAME }}
           echo ${GITHUB_WORKFLOW}
           echo ${{ needs.job1.outputs.firstword }} ${{ needs.job1.outputs.secondword }}
           echo ${{ needs.job1.outputs.name }} run completed with status ${{ needs.job1.outputs.status }}
