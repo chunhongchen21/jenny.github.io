@@ -6,6 +6,8 @@ on:
 jobs:
   job1:
     uses: ./.github/workflows/caller.yml
+    with: 
+      smtp_username: ${{secrets.SMTP_USERNAME}}
 
   job2:
     runs-on: ubuntu-latest
