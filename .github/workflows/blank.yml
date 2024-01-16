@@ -65,7 +65,7 @@ jobs:
       steps:
         - name: GET triggering workflow name
           run: |
-             echo "Hello, World!" 
+             echo "Hello, World!"  > out.txt
              printf '%s\n' "$action_state"
              echo ${{ env.DAY_OF_WEEK }}
              echo $GITHUB_WORKFLOW is completed with the status ${{ github.action_status }}
@@ -74,4 +74,10 @@ jobs:
           env: 
             GITHUB_CONTEXT: ${{ toJson(github) }}   
           run: echo "$GITHUB_CONTEXT"
-          shell: bash     
+          shell: bash
+        - name: Generate Report
+          uses: actions/upload-artifact@v3
+          with:
+            name: HTML_Report
+            path: out.txt
+            retention-days: 5
