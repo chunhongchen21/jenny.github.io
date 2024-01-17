@@ -95,4 +95,5 @@ jobs:
           run: |
             aws s3 cp out.txt s3://lc-mercury-integrationtest-logs/ --recursive
         - name: Output the result 
+          if: always()
           run: echo "Output the results"
