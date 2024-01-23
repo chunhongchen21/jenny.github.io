@@ -47,6 +47,7 @@ jobs:
             --no-push \
       - name: Show current folder
         run: |
+          cd ${pwd}
           ls
 
   # This workflow contains a single job called "build"
