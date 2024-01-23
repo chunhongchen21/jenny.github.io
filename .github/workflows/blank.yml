@@ -53,6 +53,7 @@ jobs:
 
       - name: Scan Docker Image with Trivy
         run: |
+          trivy image --format template --template "@junit.tpl" -o junit-report.xml golang:1.12-alpine \
           trivy --severity HIGH,CRITICAL --format junit --output /workspace/trivy_report.xml image --input ${{ github.repository_owner }}.tar
           echo "Current working directory: $PWD"
           ls
@@ -61,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Trivy_Report
-          path: trivy_report.xml
+          path: junit-report.xml
 
       - name: Show current folder
         run: |
