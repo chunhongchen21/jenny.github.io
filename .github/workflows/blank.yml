@@ -54,6 +54,7 @@ jobs:
       - name: Scan Docker Image with Trivy
         run: |
           trivy --severity HIGH,CRITICAL --format junit --output /workspace/trivy_report.xml image --input ${{ github.repository_owner }}.tar
+          echo "Current working directory: $PWD"
           ls
 
       - name: Generate Report
