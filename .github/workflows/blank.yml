@@ -42,9 +42,9 @@ jobs:
             gcr.io/kaniko-project/executor:latest \
             --context /workspace \
             --dockerfile /workspace/Dockerfile \
-            --tag ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
             --destination ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
             --tar-path /workspace \
+            --no-push \
       - name: Show current folder
         run: |
           ls
