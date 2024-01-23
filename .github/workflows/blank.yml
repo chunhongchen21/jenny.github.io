@@ -8,8 +8,6 @@ env:
 
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -31,6 +29,23 @@ jobs:
           echo "This is Job 2"
           echo "Current working directory: $PWD"
           ls
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker Image with Kaniko
+        run: |
+          docker buildx create --use
+          docker buildx inspect --bootstrap
+          docker run \
+            -v $(pwd):/workspace \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            gcr.io/kaniko-project/executor:latest \
+            --context /workspace \
+            --dockerfile /workspace/Dockerfile \
+            --destination ${{ github.repository_owner }}/${{ github.repository_name }}:${{ github.sha }}
+            --tar-path . \
+          ls
+            
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
