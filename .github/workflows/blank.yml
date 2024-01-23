@@ -43,7 +43,7 @@ jobs:
             --context /workspace \
             --dockerfile /workspace/Dockerfile \
             --destination ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
-            --tar-path /workspace \
+            --tar-path ${pwd}/${{ github.repository_name }}.tar \
             --no-push \
       - name: Show current folder
         run: |
