@@ -9,12 +9,12 @@ env:
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   schedule:
-  - cron: "0 0 * * *"
+    - cron: "0 0 * * *"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -42,10 +42,11 @@ jobs:
             gcr.io/kaniko-project/executor:latest \
             --context /workspace \
             --dockerfile /workspace/Dockerfile \
-            --destination ${{ github.repository_owner }}/${{ github.repository_name }}:${{ github.sha }}
+            --tag ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
+            --destination ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
             --tar-path . \
           ls
-            
+
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
@@ -79,47 +80,47 @@ jobs:
           # echo "::error file={name},line={line},endLine={endLine},title={title}::{message}
 
   test:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Set triggering workflow name
-          run: |
-             echo "Hello, World!" 
-             MY_VARIABLE="Hello, Jenny!"
-             echo "Setting variable: $MY_VARIABLE"
-             echo "MY_VARIABLE=$MY_VARIABLE" >> $GITHUB_ENV
-             echo ${{needs.build.outputs.output1}} ${{needs.build.outputs.output2}}
-             echo "action_state=yellow" >> "$GITHUB_ENV"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set triggering workflow name
+        run: |
+          echo "Hello, World!" 
+          MY_VARIABLE="Hello, Jenny!"
+          echo "Setting variable: $MY_VARIABLE"
+          echo "MY_VARIABLE=$MY_VARIABLE" >> $GITHUB_ENV
+          echo ${{needs.build.outputs.output1}} ${{needs.build.outputs.output2}}
+          echo "action_state=yellow" >> "$GITHUB_ENV"
   test2:
-      runs-on: ubuntu-latest
-      steps:
-        - name: GET triggering workflow name
-          run: |
-             echo "Hello, World!"  > out.txt
-             printf '%s\n' "$action_state"
-             echo ${{ env.DAY_OF_WEEK }}
-             echo $GITHUB_WORKFLOW is completed with the status ${{ github.action_status }}
-             echo ${{ job.status }} ${{ github.event.issue.html_url }} jobs.test.result ${{ job.services.postgres.ports[5432] }}
-        - name: Show GitHub context   
-          env: 
-            GITHUB_CONTEXT: ${{ toJson(github) }}   
-          run: echo "$GITHUB_CONTEXT"
-          shell: bash
-        - name: Generate Report
-          uses: actions/upload-artifact@v3
-          with:
-            name: HTML_Report
-            path: out.txt
-            retention-days: 5
-        - name: Setup AWS CLI
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
-            aws-region: us-weat-2
-        - name: Sync files to S3 bucket
-          run: |
-            aws s3 cp out.txt s3://lc-mercury-integrationtest-logs/ --recursive
-        - name: Output the result 
-          if: always()
-          run: echo "Output the results"
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET triggering workflow name
+        run: |
+          echo "Hello, World!"  > out.txt
+          printf '%s\n' "$action_state"
+          echo ${{ env.DAY_OF_WEEK }}
+          echo $GITHUB_WORKFLOW is completed with the status ${{ github.action_status }}
+          echo ${{ job.status }} ${{ github.event.issue.html_url }} jobs.test.result ${{ job.services.postgres.ports[5432] }}
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+        shell: bash
+      - name: Generate Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: HTML_Report
+          path: out.txt
+          retention-days: 5
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
+          aws-region: us-weat-2
+      - name: Sync files to S3 bucket
+        run: |
+          aws s3 cp out.txt s3://lc-mercury-integrationtest-logs/ --recursive
+      - name: Output the result
+        if: always()
+        run: echo "Output the results"
