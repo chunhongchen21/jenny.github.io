@@ -145,11 +145,11 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
         shell: bash
-      - name: Generate Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: HTML_Report
-          path: out.txt
+      # - name: Generate Report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: HTML_Report
+      #     path: out.txt
           retention-days: 5
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
