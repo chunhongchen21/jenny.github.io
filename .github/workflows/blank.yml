@@ -2,9 +2,6 @@
 
 name: CI
 env:
-  http_proxy: http://proxy-prc.intel.com:913
-  https_proxy: http://proxy-prc.intel.com:913
-  no_proxy: intel.com,.intel.com,10.0.0.0/8,192.168.0.0/16,localhost,127.0.0.0/8,134.134.0.0/16
   DAY_OF_WEEK: Monday
 
 # Controls when the workflow will run
@@ -77,6 +74,10 @@ jobs:
       #     docker pull bestdoctor/bdba:latest
 
       - name: Scan Docker Image with BDBA
+        env:
+          http_proxy: http://proxy-prc.intel.com:913
+          https_proxy: http://proxy-prc.intel.com:913
+          no_proxy: intel.com,.intel.com,10.0.0.0/8,192.168.0.0/16,localhost,127.0.0.0/8,134.134.0.0/16
         run: |
           curl -k -H "Authorization: Bearer ${{secrets.BDBA_API_TOKEN}}" -H "Group: 32" -T ${{ github.repository_owner }}.tar.gz "https://bdba001.icloud.intel.com/api/upload/"
 
