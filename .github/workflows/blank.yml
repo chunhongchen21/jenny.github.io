@@ -36,13 +36,14 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx inspect --bootstrap
+          ls
           docker run \
             -v $(pwd):/workspace \
             -v /var/run/docker.sock:/var/run/docker.sock \
             gcr.io/kaniko-project/executor:latest \
             --context /workspace \
             --dockerfile /workspace/Dockerfile \
-            --destination ${{ github.repository_owner }}/${{ github.repository_name }}:${{ github.sha }}
+            --destination ${{ github.repository_owner }}/${{ github.repository_name }}:${{ github.sha }} \
             --tar-path . \
           ls
             
