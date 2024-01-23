@@ -58,20 +58,24 @@ jobs:
       - name: Generate Report
         uses: actions/upload-artifact@v3
         with:
-          name: HTML_Report
+          name: Trivy_Report
           path: trivy_report.xml
 
       - name: Show current folder
         run: |
           ls
 
-      - name: Install BDBA
+      - name: Gzip Tar Archive
         run: |
-          docker pull bestdoctor/bdba:latest
+          gzip ${{ github.repository_owner }}.tar
+          ls -l
+      # - name: Install BDBA
+      #   run: |
+      #     docker pull bestdoctor/bdba:latest
 
       - name: Scan Docker Image with BDBA
         run: |
-          docker run -v /var/run/docker.sock:/var/run/docker.sock bestdoctor/bdba:latest ${{ github.repository_owner }}:latest
+          curl -k -H "Authorization: Bearer ${{secrets.BDBA_API_TOKEN}}" -H "Group: 32" -T ${{ github.repository_owner }}.tar.gz "https://bdba001.icloud.intel.com/api/upload/"
 
       - name: Show current folder
         run: |
