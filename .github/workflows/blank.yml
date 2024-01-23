@@ -44,7 +44,7 @@ jobs:
             --dockerfile /workspace/Dockerfile \
             --tag ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
             --destination ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
-            --tar-path . \
+            --tar-path /workspace \
       - name: Show current folder
         run: |
           ls
