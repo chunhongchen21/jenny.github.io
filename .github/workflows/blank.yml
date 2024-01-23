@@ -55,6 +55,14 @@ jobs:
         run: |
           trivy --severity HIGH,CRITICAL image --input ${{ github.repository_owner }}.tar
 
+      - name: Install BDBA
+        run: |
+          docker pull bestdoctor/bdba:latest
+
+      - name: Scan Docker Image with BDBA
+        run: |
+          docker run -v /var/run/docker.sock:/var/run/docker.sock bestdoctor/bdba:latest ${{ github.repository_owner }}:latest
+
       - name: Show current folder
         run: |
           ls
