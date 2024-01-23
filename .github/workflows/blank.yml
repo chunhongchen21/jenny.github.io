@@ -45,6 +45,8 @@ jobs:
             --tag ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
             --destination ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
             --tar-path . \
+      - name: Show current folder
+        run: |
           ls
 
   # This workflow contains a single job called "build"
