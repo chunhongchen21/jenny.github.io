@@ -55,6 +55,16 @@ jobs:
         run: |
           trivy --severity HIGH,CRITICAL --format junit -o trivy_report.xml image --input ${{ github.repository_owner }}.tar
 
+      - name: Generate Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: HTML_Report
+          path: trivy_report.xml
+
+      - name: Show current folder
+        run: |
+          ls
+
       - name: Install BDBA
         run: |
           docker pull bestdoctor/bdba:latest
