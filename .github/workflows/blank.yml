@@ -45,6 +45,7 @@ jobs:
             --destination ${{ github.repository_owner }}:latest \
             --tar-path ${{ github.repository_owner }}.tar \
             --no-push \
+
       - name: Install Trivy
         run: |
           wget https://github.com/aquasecurity/trivy/releases/download/v0.19.1/trivy_0.19.1_Linux-64bit.deb
