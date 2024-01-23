@@ -22,7 +22,6 @@ on:
 jobs:
   job2:
     runs-on: ubuntu-latest
-    working-directory: ./
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
