@@ -30,6 +30,7 @@ jobs:
         run: |
           echo "This is Job 2"
           echo "Current working directory: $PWD"
+          ls
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
