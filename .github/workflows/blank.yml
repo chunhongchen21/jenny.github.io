@@ -42,11 +42,12 @@ jobs:
             gcr.io/kaniko-project/executor:latest \
             --context /workspace \
             --dockerfile /workspace/Dockerfile \
-            --destination ${{ github.repository_owner }}/${{ github.repository_name }}:latest \
-            --tar-path ${pwd}/${{ github.repository_name }}.tar \
+            --destination ${{ github.repository_owner }}:latest \
+            --tar-path ${{ github.repository_owner }}.tar \
             --no-push \
       - name: Show current folder
         run: |
+          ls
           cd ${pwd}
           ls
 
