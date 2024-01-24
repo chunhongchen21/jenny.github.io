@@ -37,7 +37,7 @@ jobs:
 
       - name: Check if context-sub-path exists
         id: check_val
-        run: echo "::set-output name=context-sub-path::$(if [ -n '${{ inputs.exclude }}' ]; then echo ${{inputs.exclude}}; else echo ${{inputs.include}}; fi)"
+        run: echo "context-sub-path=$(if [ -n '${{ inputs.exclude }}' ]; then echo ${{inputs.exclude}}; else echo ${{inputs.include}}; fi)" >> $GITHUB_OUTPUT
 
       - name: show output name
         run: echo ${{ steps.check_val.outputs.context-sub-path}}
