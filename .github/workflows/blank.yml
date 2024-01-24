@@ -36,7 +36,7 @@ jobs:
 
       - name: Check if context-sub-path exists
         id: check_val
-        run: echo "context-sub-path=$(if [ -n '${{ inputs.exclude }}'  == 'pr']; then echo ${{inputs.exclude}}_pr; else echo ${{inputs.include}}; fi)" >> $GITHUB_OUTPUT
+        run: echo "context-sub-path=$(if ["${{ inputs.exclude }}"  == "pr"]; then echo ${{inputs.exclude}}_pr; else echo ${{inputs.include}}; fi)" >> $GITHUB_OUTPUT
 
       - name: show output name
         run: echo ${{ steps.check_val.outputs.context-sub-path}}
