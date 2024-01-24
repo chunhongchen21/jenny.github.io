@@ -20,7 +20,6 @@ on:
         type: string
       exclude:
         description: Select test cases not to run by tag
-        default: TODO
         required: false
         type: string
 
