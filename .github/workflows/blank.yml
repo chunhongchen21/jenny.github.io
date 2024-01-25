@@ -3,6 +3,10 @@
 name: CI
 env:
   DAY_OF_WEEK: Monday
+  MY_LIST: |
+    value1
+    value2
+    value3
 
 # Controls when the workflow will run
 
@@ -40,6 +44,19 @@ jobs:
 
       - name: show output name
         run: echo ${{ steps.check_val.outputs.context-sub-path}}
+
+      - name: Print List Variable
+        run: |
+          echo "My List Variable:"
+          echo "$MY_LIST"
+
+      - name: Use List in a Script
+        run: |
+          # Loop through the list in a script
+          for value in $MY_LIST; do
+            echo "Processing $value"
+            # Add your logic here
+          done
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
