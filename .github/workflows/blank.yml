@@ -7,6 +7,10 @@ env:
     value1
     value2
     value3
+  MY_MAP: |
+    key1: value1
+    key2: value2
+    key3: value3
 
 # Controls when the workflow will run
 
@@ -57,7 +61,17 @@ jobs:
             echo "Processing $value"
             # Add your logic here
           done
+      - name: Print Map Variable
+        run: |
+          echo "My Map Variable:"
+          echo "$MY_MAP"
 
+      - name: Use Map in a Script
+        run: |
+          # Access values in the script
+          echo "Value of key1: $(echo "$MY_MAP" | awk '/key1/{getline; print}')"
+          echo "Value of key2: $(echo "$MY_MAP" | awk '/key2/{getline; print}')"
+          echo "Value of key3: $(echo "$MY_MAP" | awk '/key3/{getline; print}')"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
