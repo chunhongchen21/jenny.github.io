@@ -71,23 +71,32 @@ jobs:
           # Access values in the script
           echo "Value of key1: $(echo "$MY_MAP" | awk '/key1/{getline; print}')"
           echo "Value of key2: $(echo "$MY_MAP" | awk '/key2/{getline; print}')"
-          echo "Value of key3: $(echo "$MY_MAP" | awk '/key3/{getline; print}')"
+          echo "Value of key0: $(echo "$MY_MAP" | awk '/key0/{getline; print}')"
+          echo "MY_MAP"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Build Docker Image with Kaniko
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
         run: |
+          echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\",\"auth\":\"$(echo -n $DOCKER_USERNAME:$DOCKER_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
           docker buildx create --use
           docker buildx inspect --bootstrap
           docker run \
             -v $(pwd):/workspace \
             -v /var/run/docker.sock:/var/run/docker.sock \
+            -e DOCKER_CONFIG=/kaniko/.docker \
             gcr.io/kaniko-project/executor:latest \
             --context /workspace \
             --dockerfile /workspace/Dockerfile \
-            --destination ${{ github.repository_owner }}:latest \
-            --tar-path ${{ github.repository_owner }}.tar \
-            --no-push \
+            --destination ccr-registry.caas.intel.com/idi-cloud-infrastructure/temp:latest \
+            --tar-path ccr-registry.caas.intel.com/idi-cloud-infrastructure/temp.tar \
+
+          ls
 
       - name: Install Trivy
         run: |
