@@ -220,3 +220,6 @@ jobs:
       - name: Output the result
         if: always()
         run: echo "Output the results"
+      - name: Check if context-sub-path exists
+        id: check_val1
+        run: echo "context-sub-path=$(if [ -n '${{ inputs.context-sub-path }}' ]; then echo ${{inputs.context-sub-path}}; else echo ${{inputs.repository_name}}; fi)" >> $GITHUB_OUTPUT
