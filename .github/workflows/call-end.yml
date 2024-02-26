@@ -21,7 +21,7 @@ jobs:
   job3:
     runs-on: ubuntu-latest
     outputs:
-      repository: ${{ steps.test.outputs.repository }}
+      # repository: ${{ steps.test.outputs.repository }}
       output1: ${{ steps.step1.outputs.firstword }}
       output2: ${{ steps.step2.outputs.secondword }}
     steps:
@@ -40,7 +40,7 @@ jobs:
     needs: [job3]
     steps:
       - run: |
-          echo ${{ needs.job3.outputs.repository }}
+          echo ${{ needs.job3.outputs.output1 }}
 
   # job2:
   #   runs-on: ubuntu-latest
