@@ -16,9 +16,9 @@ jobs:
       output2: ${{ steps.step2.outputs.secondword }}
     steps:
       - id: step1
-        run: echo "firstword=123.dkr.ecr.eu-central-1.amazonaws.com" >> $GITHUB_OUTPUT
+        run: echo "firstword=403890059381.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation" >> $GITHUB_OUTPUT
       - id: step2
-        run: echo "secondword=123.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation" >> $GITHUB_OUTPUT
+        run: echo "secondword=403890059381.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation/pipeline-manager" >> $GITHUB_OUTPUT
       # - name: test
       #   id: test
       #   run: |
