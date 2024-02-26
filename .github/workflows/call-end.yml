@@ -22,8 +22,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: AKIAV4CNZHB2RWSIVEL4
-          aws-secret-access-key: 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
+          aws-access-key-id: AKIAV4CNZHB2RWSIVEL2
+          aws-secret-access-key: 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
           aws-region: eu-central-1
       # - name: test
       #   id: test
