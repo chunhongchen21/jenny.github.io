@@ -2,16 +2,6 @@ name: Call a reusable workflow and use its outputs
 
 on:
   workflow_dispatch:
-  workflow_call:
-    outputs:
-      firstword:
-        description: "The first output string"
-        value: ${{ jobs.job3.outputs.output1 }}
-      secondword:
-        description: "The second output string"
-        value: ${{ jobs.job3.outputs.output2 }}
-      repository:
-        value: ${{ jobs.job3.outputs.repository }}
 
 jobs:
   # job1:
@@ -26,9 +16,9 @@ jobs:
       output2: ${{ steps.step2.outputs.secondword }}
     steps:
       - id: step1
-        run: echo "firstword=hello" >> $GITHUB_OUTPUT
+        run: echo "firstword=123.dkr.ecr.eu-central-1.amazonaws.com" >> $GITHUB_OUTPUT
       - id: step2
-        run: echo "secondword=world" >> $GITHUB_OUTPUT
+        run: echo "secondword=123.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation" >> $GITHUB_OUTPUT
       # - name: test
       #   id: test
       #   run: |
@@ -41,6 +31,7 @@ jobs:
     steps:
       - run: |
           echo ${{ needs.job3.outputs.output1 }}
+          echo ${{needs.job3.outputs.output2}}
 
   # job2:
   #   runs-on: ubuntu-latest
