@@ -19,6 +19,12 @@ jobs:
         run: echo "firstword=403890059381.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation" >> $GITHUB_OUTPUT
       - id: step2
         run: echo "secondword=403890059381.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation/pipeline-manager" >> $GITHUB_OUTPUT
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ inputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+          aws-region: eu-central-1
       # - name: test
       #   id: test
       #   run: |
