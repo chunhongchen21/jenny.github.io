@@ -31,7 +31,7 @@ jobs:
         run: echo "secondword=world" >> $GITHUB_OUTPUT
       - name: test
         id: test
-        run: |-
+        run: |
           X_REPOSITORY = abcd
           echo "repository=$X_REPOSITORY" >> $GITHUB_OUTPUT
 
