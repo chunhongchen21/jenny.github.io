@@ -105,19 +105,10 @@ jobs:
       x_repo: t.dkr.ecr.eu-west-1.amazonaws.com/${{matrix.repository_name}}
       pipeline_dir: security-scan-pipeline
     steps:
-      - name: Check out Repository
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            .github
 
       - name: Start Date
         run: |
-          echo "version=${{env.x_repo}}" 
-          mkdir -p ${{env.pipeline_dir}}
-          cd ${{env.pipeline_dir}}
-          ls -la
-          if [[ ${{matrix.trivy-ignore}} ]]; then
+          if [[ ${{matrix.trivy-ignore}}]]; then
               echo ${{matrix.trivy-ignore}}
           else 
               echo "no ignore"
