@@ -108,10 +108,9 @@ jobs:
 
       - name: Start Date
         run: |
-          if [[ ${{matrix.trivy-ignore}}]]
-          then
+          if [ ${{matrix.trivy-ignore}} == true ]; then
               echo ${{matrix.trivy-ignore}}
-          else 
+          else
               echo "no ignore"
           fi
 
