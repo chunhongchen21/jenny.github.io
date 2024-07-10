@@ -1,11 +1,11 @@
 name: Algo IaC - Create
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - cloud/algo-iac/**
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - cloud/algo-iac/**
 
 jobs:
   iac-sync:
