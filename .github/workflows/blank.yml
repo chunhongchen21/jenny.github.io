@@ -1,0 +1,226 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+env:
+  DAY_OF_WEEK: Monday
+  MY_LIST: |
+    value1
+    value2
+    value3
+  MY_MAP: |
+    key1: value1
+    key2: value2
+    key3: value3
+
+# Controls when the workflow will run
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  pull_request:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      include:
+        description: Select tests by tag
+        required: true
+        type: string
+      exclude:
+        description: Select test cases not to run by tag
+        required: false
+        type: string
+
+  schedule:
+    - cron: "0 0 * * *"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Check if context-sub-path exists
+        id: check_val
+        run: echo "context-sub-path=$(if ${{ inputs.exclude  == 'pr'}}; then echo ${{inputs.exclude}}_pr; else echo ${{inputs.include}}; fi)" >> $GITHUB_OUTPUT
+
+      - name: show output name
+        run: echo ${{ steps.check_val.outputs.context-sub-path}}
+
+      - name: Print List Variable
+        run: |
+          echo "My List Variable:"
+          echo "$MY_LIST"
+
+      - name: Use List in a Script
+        run: |
+          # Loop through the list in a script
+          for value in $MY_LIST; do
+            echo "Processing $value"
+            # Add your logic here
+          done
+      - name: Print Map Variable
+        run: |
+          echo "My Map Variable:"
+          echo "$MY_MAP"
+
+      - name: Use Map in a Script
+        run: |
+          # Access values in the script
+          echo "Value of key1: $(echo "$MY_MAP" | awk '/key1/{getline; print}')"
+          echo "Value of key2: $(echo "$MY_MAP" | awk '/key2/{getline; print}')"
+          echo "Value of key0: $(echo "$MY_MAP" | awk '/key0/{getline; print}')"
+          echo "MY_MAP"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker Image with Kaniko
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+        run: |
+          echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\",\"auth\":\"$(echo -n $DOCKER_USERNAME:$DOCKER_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
+          docker buildx create --use
+          docker buildx inspect --bootstrap
+          docker run \
+            -v $(pwd):/workspace \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -e DOCKER_CONFIG=/kaniko/.docker \
+            gcr.io/kaniko-project/executor:latest \
+            --context /workspace \
+            --dockerfile /workspace/Dockerfile \
+            --destination temp:latest \
+            --tar-path temp.tar \
+
+          ls
+
+      - name: Install Trivy
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.19.1/trivy_0.19.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.19.1_Linux-64bit.deb
+
+      - name: Scan Docker Image with Trivy
+        run: |
+          # trivy image --format template --template "@.github/templates/html.tpl" -o junit-report.html golang:1.12-alpine 
+          trivy image --input treatment-plan-handler.tar --format template --template "@.github/templates/html.tpl" --output treatment-plan.html --timeout 30m
+          echo "Current working directory: $PWD"
+          ls
+
+      - name: Generate Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Trivy_Report
+          path: treatment-plan.html
+
+      - name: Show current folder
+        run: |
+          ls
+          cd workspace
+          ls
+
+      - name: Gzip Tar Archive
+        run: |
+          gzip ${{ github.repository_owner }}.tar
+          ls -l
+      # - name: Install BDBA
+      #   run: |
+      #     docker pull bestdoctor/bdba:latest
+
+      - name: Scan Docker Image with BDBA
+        env:
+          http_proxy: http://proxy-prc.xxx.com:913
+          https_proxy: http://proxy-prc.xxx.com:913
+          no_proxy: xxx.com,10.0.0.0/8,192.168.0.0/16,localhost,127.0.0.0/8,134.134.0.0/16
+        run: |
+          curl -k -H "Authorization: Bearer ${{secrets.BDBA_API_TOKEN}}" -H "Group: 32" -T ${{ github.repository_owner }}.tar.gz "https://bdba001.icloud.xxx.com/api/upload/"
+
+      - name: Show current folder
+        run: |
+          ls
+          cd ${pwd}
+          ls
+
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        id: step1
+        run: |
+          echo Hello, world!
+          echo "::set-output name=test::hi"
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        id: step2
+        run: |
+          env
+          echo Add other actions to build,
+          echo test, and deploy your project.
+          echo "::set-output name=test::world"
+          echo "::debug::Set the Octocat variable"
+          echo "::notice file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
+          echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
+          # echo "::error file={name},line={line},endLine={endLine},title={title}::{message}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set triggering workflow name
+        run: |
+          echo "Hello, World!" 
+          MY_VARIABLE="Hello, Jenny!"
+          echo "Setting variable: $MY_VARIABLE"
+          echo "MY_VARIABLE=$MY_VARIABLE" >> $GITHUB_ENV
+          echo ${{needs.build.outputs.output1}} ${{needs.build.outputs.output2}}
+          echo "action_state=yellow" >> "$GITHUB_ENV"
+  test2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET triggering workflow name
+        run: |
+          echo "Hello, World!"  > out.txt
+          printf '%s\n' "$action_state"
+          echo ${{ env.DAY_OF_WEEK }}
+          echo $GITHUB_WORKFLOW is completed with the status ${{ github.action_status }}
+          echo ${{ job.status }} ${{ github.event.issue.html_url }} jobs.test.result ${{ job.services.postgres.ports[5432] }}
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+        shell: bash
+      # - name: Generate Report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: HTML_Report
+      #     path: out.txt
+      #     retention-days: 5
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
+          aws-region: us-weat-2
+      - name: Sync files to S3 bucket
+        run: |
+          aws s3 cp out.txt s3://lc-mercury-integrationtest-logs/ --recursive
+      - name: Output the result
+        if: always()
+        run: echo "Output the results"
+      - name: Check if context-sub-path exists
+        id: check_val1
+        run: echo "context-sub-path=$(if [ -n '${{ inputs.context-sub-path }}' ]; then echo ${{inputs.context-sub-path}}; else echo ${{inputs.repository_name}}; fi)" >> $GITHUB_OUTPUT

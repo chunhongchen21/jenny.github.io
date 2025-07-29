@@ -1,0 +1,67 @@
+name: Algo IaC - Create
+on:
+  workflow_dispatch:
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - cloud/algo-iac/**
+
+jobs:
+  iac-sync:
+    name: create stack
+    runs-on:
+      group: gasp-arc-beta
+    environment:
+      name: algo-dev-ci
+    container:
+      image: job-container:latest
+
+    defaults:
+      run:
+        working-directory: cloud/algo-iac
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+          cache: "npm"
+          cache-dependency-path: cloud/algo-iac/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci --omit=optional
+      - name: Install Pulumi
+        run: |-
+          curl -fsSL https://get.pulumi.com | sh
+          export PATH=~/.pulumi/bin:$PATH
+
+      - name: Setup Pulumi
+        id: pulumi-config-update
+        run: |-
+          pulumi login s3://${{vars.AWS_S3_IAC_STATE_ALGO_DEV}}
+          if pulumi stack ls | grep "algo"; then
+              pulumi stack select algo
+          else 
+              pulumi stack init algo
+          fi
+          pulumi up --config pub="${{vars.AWS_EC2_IAC_PUB_ALGO_DEV}}" --skip-preview
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
+
+      - name: Pulumi Ouput
+        id: pulumi-output
+        run: |-
+          RESOURCES=$(pulumi stack --stack algo output --json)
+          echo $RESOURCES
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION:  ${{ vars.AWS_REGION }}
+          PULUMI_CONFIG_PASSPHRASE: ""

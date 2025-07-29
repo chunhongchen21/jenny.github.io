@@ -1,0 +1,17 @@
+name: Test
+env:
+  DAY_OF_WEEK: Wedsday
+
+# Controls when the workflow will run
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: show output name
+        run: echo ${{ env.DAY_OF_WEEK}}
