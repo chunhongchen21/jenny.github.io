@@ -1,0 +1,52 @@
+name: Call a reusable workflow and use its outputs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # job1:
+  #   uses: ./.github/workflows/caller.yml
+  #   with:
+  #     smtp_username: ${{secrets.SMTP_USERNAME}}
+  job3:
+    runs-on: ubuntu-latest
+    outputs:
+      # repository: ${{ steps.test.outputs.repository }}
+      output1: ${{ steps.step1.outputs.firstword }}
+      output2: ${{ steps.step2.outputs.secondword }}
+    steps:
+      - id: step1
+        run: echo "firstword=2222.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation" >> $GITHUB_OUTPUT
+      - id: step2
+        run: echo "secondword=2222.dkr.ecr.eu-central-1.amazonaws.com/e2e-validation/pipeline-manager" >> $GITHUB_OUTPUT
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: XXX
+          aws-secret-access-key: XXX
+          aws-region: eu-central-1
+      # - name: test
+      #   id: test
+      #   run: |
+      #     X_REPOSITORY = abcd
+      #     echo "repository=$X_REPOSITORY" >> $GITHUB_OUTPUT
+
+  test-job:
+    runs-on: ubuntu-latest
+    needs: [job3]
+    steps:
+      - run: |
+          echo ${{ needs.job3.outputs.output1 }}
+          echo ${{needs.job3.outputs.output2}}
+
+  # job2:
+  #   runs-on: ubuntu-latest
+
+  #   needs: job1
+  #   if: success() && true
+  #   steps:
+  #     - run: |
+  #         echo ${{ secrets.SMTP_USERNAME }}
+  #         echo ${GITHUB_WORKFLOW}
+  #         echo ${{ needs.job1.outputs.firstword }} ${{ needs.job1.outputs.secondword }}
+  #         echo ${{ needs.job1.outputs.name }} run completed with status ${{ needs.job1.outputs.status }}

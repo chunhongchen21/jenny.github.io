@@ -1,0 +1,116 @@
+name: Security Scan on Schedule
+on:
+  # push:
+  # schedule:
+  #   - cron: 0 1 * * *
+  workflow_dispatch:
+    inputs:
+      aws-region:
+        type: string
+        required: false
+      aws-access-key-id:
+        type: string
+        required: false
+      aws-secret-access-key:
+        type: string
+        required: false
+env:
+  http_proxy: http://xxx.com:911
+  https_proxy: http://xxx.com:912
+  no_proxy: 10.0.0.0/8,192.168.0.0/16,localhost,127.0.0.0/8,134.134.0.0/16
+
+jobs:
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repository_name:
+          - pre-puller
+          - video-saver
+          - algo-results-writer
+          - webrtc
+          - pipeline-manager
+          - treatment-plan-handler
+          - ws-nats-gw
+          - summary-session-manager
+          - transcript-session-manager
+          - algo
+          - algo-config
+          - algo-llm
+          - pipeline-scheduler
+        include:
+          - repository_name: pipeline-manager
+            bdba_id: 4165944
+            skip-bdba-scan: false
+            image-tag: latest
+            trivy-ignore: true
+          - repository_name: treatment-plan-handler
+            bdba_id: 4165943
+            skip-bdba-scan: false
+            image-tag: latest
+            trivy-ignore: true
+          - repository_name: pre-puller
+            bdba_id: 4432585
+            skip-bdba-scan: false
+            image-tag: latest
+            trivy-ignore: true
+          - repository_name: algo-results-writer
+            bdba_id: 4165942
+            skip-bdba-scan: false
+            image-tag: latest
+            trivy-ignore: true
+          - repository_name: video-saver
+            bdba_id: 4432586
+            skip-bdba-scan: false
+            image-tag: latest
+            trivy-ignore: true
+          - repository_name: webrtc
+            bdba_id: 4165578
+            skip-bdba-scan: false
+            image-tag: latest
+            trivy-ignore: true
+          - repository_name: ws-nats-gw
+            bdba_id: 4432587
+            skip-bdba-scan: false
+            image-tag: latest
+            trivy-ignore: true
+          - repository_name: summary-session-manager
+            bdba_id: 4730532
+            skip-bdba-scan: false
+            image-tag: latest
+          - repository_name: transcript-session-manager
+            bdba_id: 4910741
+            skip-bdba-scan: false
+            image-tag: latest
+          - repository_name: algo
+            bdba_id: 4170081
+            skip-bdba-scan: false
+            image-tag: latest
+          - repository_name: algo-config
+            bdba_id: 4157522
+            skip-bdba-scan: false
+            image-tag: latest
+          - repository_name: algo-llm
+            bdba_id: 4926885
+            skip-bdba-scan: false
+            image-tag: latest
+          - repository_name: pipeline-scheduler
+            bdba_id: 4910738
+            skip-bdba-scan: false
+            image-tag: latest
+            
+    env:
+      aws-region: eu-west-1
+      x_repo: t.dkr.ecr.eu-west-1.amazonaws.com/${{matrix.repository_name}}
+      pipeline_dir: security-scan-pipeline
+    steps:
+
+      - name: Start Date
+        run: |
+          if [ ${{matrix.trivy-ignore}} == true ]; then
+              echo ${{matrix.trivy-ignore}}
+          else
+              echo "no ignore"
+          fi
+

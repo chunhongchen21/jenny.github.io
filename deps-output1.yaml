@@ -1,0 +1,10 @@
+- name: external-secrets
+  type: helm
+  version: 0.9.17
+  repoName: external-secrets
+  repoUrl: https://charts.external-secrets.io/
+- name: external-secrets1
+  type: helm
+  version: 1.9.17
+  repoName: external-secrets1
+  repoUrl: https://charts.external-secrets1.io/
